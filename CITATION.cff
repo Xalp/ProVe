@@ -5,14 +5,14 @@ type: software
 authors:
   - family-names: Jin
     given-names: Ziqi
+  - family-names: Xu
+    given-names: Weiwen
   - family-names: Li
     given-names: Jiaxi
   - family-names: Zhong
     given-names: Yujie
   - family-names: She
     given-names: Qi
-  - family-names: Xu
-    given-names: Weiwen
   - family-names: Sun
     given-names: Aixin
 repository-code: "https://github.com/Xalp/ProVe"
@@ -30,14 +30,14 @@ preferred-citation:
   authors:
     - family-names: Jin
       given-names: Ziqi
+    - family-names: Xu
+      given-names: Weiwen
     - family-names: Li
       given-names: Jiaxi
     - family-names: Zhong
       given-names: Yujie
     - family-names: She
       given-names: Qi
-    - family-names: Xu
-      given-names: Weiwen
     - family-names: Sun
       given-names: Aixin
   journal: "arXiv preprint"

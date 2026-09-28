@@ -98,7 +98,7 @@ experiment is not reported in the paper, whose tables use the 32B proposer.
 |---|---|---|
 | `MARS-Qwen2.5-7B-blk16` | 7B proposer (Qwen2.5-7B-Instruct, block size 16); the 7B numbers below | [`Xalphinions/MARS-Qwen2.5-7B-blk16`](https://huggingface.co/Xalphinions/MARS-Qwen2.5-7B-blk16) |
 | `MARS-Qwen2.5-7B-AR-SFT` | its stage-1 AR checkpoint (AR baseline, or `STAGE2_INIT` for training) | [`Xalphinions/MARS-Qwen2.5-7B-AR-SFT`](https://huggingface.co/Xalphinions/MARS-Qwen2.5-7B-AR-SFT) |
-| 32B proposer | Qwen2.5-32B-Instruct + Dolci, block size 16; the paper's main proposer | release pending |
+| `ProVe-Qwen2.5-32B-blk16` | 32B proposer (Qwen2.5-32B-Instruct + Dolci, 1 + 1 epochs, block size 16); the paper's main proposer | [`Xalphinions/ProVe-Qwen2.5-32B-blk16`](https://huggingface.co/Xalphinions/ProVe-Qwen2.5-32B-blk16) (private until the public release) |
 | verifiers | stock `Qwen/Qwen2.5-3B-Instruct`, `Qwen/Qwen2.5-7B-Instruct` | Hugging Face Hub |
 
 Any MARS block-16 checkpoint is a valid proposer; `train/` reproduces the 32B one.
@@ -182,7 +182,7 @@ assets/             figures used in this README
 ```bibtex
 @article{jin2026prove,
   title   = {ProVe: Proposer-Verifier Decoding},
-  author  = {Jin, Ziqi and Li, Jiaxi and Zhong, Yujie and She, Qi and Xu, Weiwen and Sun, Aixin},
+  author  = {Jin, Ziqi and Xu, Weiwen and Li, Jiaxi and Zhong, Yujie and She, Qi and Sun, Aixin},
   journal = {arXiv preprint arXiv:TBD},
   year    = {2026}
 }
