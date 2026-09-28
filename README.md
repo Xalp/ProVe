@@ -82,7 +82,11 @@ python bench/quick_bench.py --port 30001 --tokenizer models/MARS-Qwen2.5-7B-blk1
 ```
 
 The second run reports tokens per second, the fraction of outputs identical to the AR run
-(expect 100 % up to bf16 ties) and the accepted tokens per cycle from the server log; both
+and the accepted tokens per cycle from the server log. Do not expect every output to be
+byte-identical: the block path and the AR path run different kernels, and at a near-tie token
+their bf16 logits can pick different winners, after which the two continuations differ. In our
+check (40 GSM8K prompts, 512 new tokens) 28 of 40 outputs were identical for the 7B proposer
+and 29 of 40 for the 32B; the paper therefore compares task accuracy, not byte identity. Both
 runs generate up to 1024 new tokens per prompt, the paper's cap. With the 7B proposer on GSM8K,
 this repository's stack measured 433 vs 234 tok/s (1.85×) at 6.13 accepted tokens per cycle
 (`eval/run_eval.sh` on `gsm8k_cot`, greedy, one request at a time, 1024 new tokens); that 7B

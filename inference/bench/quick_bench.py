@@ -243,6 +243,8 @@ def report_log(before, after):
             d, b = dict(kv), {}
         label = "this run" if b else "cumulative since server start"
         tok, fwd, cyc = d.get("tok", 0.0), d.get("fwd", 0.0), d.get("cycles")
+        if not tok and not fwd:      # e.g. the [InprocVerifier] line, which counts pool events only
+            continue
         parts = [f"tokens={tok:.0f}", f"proposer_forwards={fwd:.0f}"]
         if cyc:
             parts.append(f"cycles={cyc:.0f}")

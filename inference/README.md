@@ -131,8 +131,11 @@ python bench/quick_bench.py --port 30001 --tokenizer models/MARS-Qwen2.5-7B-blk1
 ```
 
 The second run prints the throughput, the fraction of outputs identical to the AR run
-(`--compare`; expect 100 % up to bf16 ties) and, from the log, the accepted tokens per cycle
-(`--server-log`). `quick_bench.py` generates up to 1024 new tokens per prompt (the paper's
+(`--compare`) and, from the log, the accepted tokens per cycle (`--server-log`). Identity is
+not 100 %: the block path and the AR path run different kernels, so at a near-tie token their
+bf16 logits can pick different winners and the continuations diverge from there (28 of 40 and
+29 of 40 identical outputs for the 7B and 32B proposers in the run below); the paper compares
+task accuracy, not byte identity. `quick_bench.py` generates up to 1024 new tokens per prompt (the paper's
 cap; accepted tokens per cycle and tok/s both change with it). With the 7B proposer on GSM8K,
 this repository's stack measured 433 vs 234 tok/s (1.85×) at 6.13 accepted tokens per cycle
 for ProVe-lossless, accuracy 75.1 vs 74.4 (`eval/run_eval.sh --config ar` / `lossless` on
@@ -240,6 +243,26 @@ deprecation warning on every call).
 | 32B | ProVe, 3B verifier, θ = 0.01 | 2.7× | −2.6 points | paper |
 | 32B | ProVe, 7B verifier, θ = 0.05 | 2.3× | −0.2 points | paper |
 | 7B (public `MARS-Qwen2.5-7B-blk16`), GSM8K | ProVe-lossless | 1.85× (433 vs 234 tok/s), 6.13 accepted tokens per cycle | 75.1 vs 74.4 | measured with this repository; not in the paper |
+
+### Smoke numbers from a fresh install (2026-09-28)
+
+A bare machine, `setup_env.sh` (3 min), the commands above, `quick_bench.py --n 40
+--max-new-tokens 512` (GSM8K questions through the chat template, mean 160 completion
+tokens; short answers, so the speed-ups are higher than the paper's 1024-token protocol):
+
+| proposer | configuration | tok/s | accepted tokens / cycle |
+|---|---|---|---|
+| 7B, 1 GPU | AR | 140 | – |
+| 7B, 1 GPU | ProVe-lossless | 446 (3.2×) | 7.0 |
+| 7B, 1 GPU | ProVe, 3B verifier, θ = 0.05 | 314 (2.2×) | 4.2 |
+| 32B, `--tp 2` | AR | 70.5 | – |
+| 32B, `--tp 2` | ProVe-lossless | 226 (3.2×) | 8.0 |
+| 32B, `--tp 2` | ProVe, 3B verifier, θ = 0.05 | 218 (3.1×) | 4.8 |
+
+The 32B ProVe row gives the same tokens per second with the paper's pinned split
+(`--mem-fraction 0.70 --verifier-mem-fraction 0.18`, verifier pool 0.8 GB) and with the
+default `inproc_pool_gb: 2.0`. `eval/run_eval.sh --config lossless --tp 1` on 30 GSM8K
+problems ran through the same install.
 
 Full evaluation (lm-evaluation-harness, accuracy and speed from the same generations) is in
 `../eval/`; training the proposer is in `../train/`.
