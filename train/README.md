@@ -34,7 +34,7 @@ only -0.6 points relative to it).
 | | Stage 1: AR SFT (`train/train_ar_sft.py`) | Stage 2: block training (`train/train_mars.py`) |
 |---|---|---|
 | Initialisation | `Qwen/Qwen2.5-32B-Instruct` | stage-1 `checkpoint-final` |
-| Data | `allenai/Dolci-Instruct-SFT`, all 2,152,112 rows | seed-42 shuffled 12.5 % subset, 269,014 rows (`prepare_dolci_subset.py`) |
+| Data | `allenai/Dolci-Instruct-SFT`, all 2,152,112 rows | the same `allenai/Dolci-Instruct-SFT`, all rows again |
 | Epochs | 1 | 1 |
 | Learning rate | 5e-6, cosine, warmup ratio 0.03 | same |
 | Sequence length | 512 (right truncation) | 512 per stream |
@@ -51,19 +51,23 @@ streams. With more than one node, DeepSpeed's `zero_hpz_partition_size` is set t
 node: parameters are sharded inside a node and replicated across nodes, so only the gradient
 reduce-scatter crosses the network.
 
-**Why a 12.5 % subset for stage 2.** Block training doubles every sequence and the block-causal
-mask keeps attention on the slow path, so a stage-2 step costs roughly 17x a stage-1 step; the
-full 2.15 M rows would take about 8 days on 32 GPUs. **Why it is shuffled before slicing.**
-Dolci is stored ordered by source (its last ~200k rows are all Tool Use); a head slice would
-silently drop whole domains. The seed-42 shuffle keeps every domain in proportion:
+Both stages see the whole dataset once ("1 + 1 epochs"): 4,718 optimizer steps each at an
+effective batch of 384. A stage-2 step costs about twice a stage-1 step (every row carries both
+streams), which is where the 384 versus 150 GPU hours come from.
+
+**Cheaper stage 2 (optional, not what the paper's proposer used).** `prepare_dolci_subset.py`
+builds a seed-42 shuffled 12.5 % subset of Dolci (269,014 rows). It shuffles before slicing
+because Dolci is stored ordered by source (its last ~200k rows are all Tool Use), so a head
+slice would silently drop whole domains; the shuffle keeps every domain in proportion:
 
 ```
 Coding 41,264   Reasoning 38,882   Chat 38,683   Math 33,727   Other 31,825   Tool Use 28,480
 Precise IF 16,895   Safety 13,706   Science 13,045   Multilingual 12,495   Hardcoded Data 12
 ```
 
-`prepare_dolci_subset.py` prints these counts; if the dataset changes upstream the row-count
-assertion fails rather than silently producing a different subset.
+Pass its output as `STAGE2_DATASET` to train stage 2 on it (about one eighth of the stage-2
+compute); the row-count assertion in the script fails rather than silently producing a
+different subset if the dataset changes upstream.
 
 ## Setup
 
@@ -80,20 +84,21 @@ only hard requirements; `requirements.txt` pins the versions the authors used.
 
 ## Run
 
-1. Build the stage-2 subset once (downloads Dolci on first use; a few minutes):
+1. (Optional) build the cheaper stage-2 subset (downloads Dolci on first use; a few minutes):
 
    ```bash
    python train/prepare_dolci_subset.py --out data/dolci_12p5
    ```
 
    It writes `data/dolci_12p5/train.parquet` (400 MB), which MARS reads with
-   `--dataset_args data/dolci_12p5`.
+   `--dataset_args data/dolci_12p5`. Skip this step to reproduce the paper's proposer (stage 2
+   on the full dataset, the default).
 
 2. Train on one node (8 GPUs, detected automatically):
 
    ```bash
-   MARS_DIR=/path/to/MARS STAGE2_DATASET=data/dolci_12p5 OUT_DIR=runs/prove-32b \
-     bash train/train_proposer.sh
+   MARS_DIR=/path/to/MARS OUT_DIR=runs/prove-32b bash train/train_proposer.sh
+   # cheaper stage 2:  MARS_DIR=... STAGE2_DATASET=data/dolci_12p5 OUT_DIR=... bash train/train_proposer.sh
    ```
 
    Stage 1 writes `runs/prove-32b/ar_sft/checkpoint-final`, stage 2
@@ -101,7 +106,7 @@ only hard requirements; `requirements.txt` pins the versions the authors used.
    state is saved every 300 steps (`save_only_model False`), so an interrupted stage resumes with
 
    ```bash
-   STAGE=2 RESUME=runs/prove-32b/mars_blk16/checkpoint-2400 MARS_DIR=... STAGE2_DATASET=... OUT_DIR=runs/prove-32b \
+   STAGE=2 RESUME=runs/prove-32b/mars_blk16/checkpoint-2400 MARS_DIR=... OUT_DIR=runs/prove-32b \
      bash train/train_proposer.sh
    ```
 

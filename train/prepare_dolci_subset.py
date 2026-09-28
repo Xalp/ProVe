@@ -1,10 +1,12 @@
 #!/usr/bin/env python
-"""Build the stage-2 training subset of Dolci-Instruct-SFT used for the ProVe proposers.
+"""Build an OPTIONAL, cheaper stage-2 training subset of Dolci-Instruct-SFT.
 
-Stage 2 (block training, B=16) runs on a seed-42 shuffled 12.5 % subset of
-allenai/Dolci-Instruct-SFT: 269,014 of the 2,152,112 training rows. The subset is
-shuffled BEFORE slicing because Dolci is stored ordered by source (its last ~200k rows are
-all "Tool Use"), so a contiguous head slice would silently drop whole domains.
+The paper's proposers trained stage 2 (block training, B=16) on the full
+allenai/Dolci-Instruct-SFT, the same rows as stage 1 (1 + 1 epochs). This script builds a
+seed-42 shuffled 12.5 % subset (269,014 of the 2,152,112 rows) for runs that cannot afford
+that: about one eighth of the stage-2 compute. The subset is shuffled BEFORE slicing because
+Dolci is stored ordered by source (its last ~200k rows are all "Tool Use"), so a contiguous
+head slice would silently drop whole domains.
 
     python train/prepare_dolci_subset.py --out data/dolci_12p5
 

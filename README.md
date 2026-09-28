@@ -142,7 +142,7 @@ the proposer's outputs (the trained verifiers are not part of this release).*
 
 A proposer is an ordinary instruction-tuned model after two stages of fine-tuning with the
 public [MARS](https://github.com/Xalp/MARS) code: AR SFT on Dolci, then block training
-(block size 16) on a 12.5 % subset. [train/README.md](train/README.md) gives the exact recipe,
+(block size 16) on the same data, one epoch each. [train/README.md](train/README.md) gives the exact recipe,
 hyper-parameters and GPU hours (150 + 384 on 32 GPUs for the 32B proposer);
 `train/train_proposer.sh` runs it on one 8-GPU node or across nodes.
 

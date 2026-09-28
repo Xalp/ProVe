@@ -6,14 +6,15 @@
 #   stage 2  block training   train/train_mars.py     block_size 16, from the stage-1 checkpoint
 #
 # Usage
-#   MARS_DIR=/path/to/MARS STAGE2_DATASET=data/dolci_12p5 bash train/train_proposer.sh
+#   MARS_DIR=/path/to/MARS bash train/train_proposer.sh          # the paper's recipe: 1 + 1 epochs on Dolci
 #   bash train/train_proposer.sh --help
 #
 # Everything is an environment variable (defaults in brackets):
 #   MARS_DIR          clone of https://github.com/Xalp/MARS checked out at 131b6ae      [required]
 #   BASE_MODEL        [Qwen/Qwen2.5-32B-Instruct]
 #   DATASET           stage-1 data                                        [allenai/Dolci-Instruct-SFT]
-#   STAGE2_DATASET    stage-2 data: the directory written by prepare_dolci_subset.py  [required]
+#   STAGE2_DATASET    stage-2 data                                        [$DATASET, i.e. the same rows again]
+#                     (a directory written by prepare_dolci_subset.py gives the cheaper 12.5 % variant)
 #   STAGE2_INIT       checkpoint stage 2 starts from                      [$OUT_DIR/ar_sft/checkpoint-final]
 #   OUT_DIR           [runs/prove-proposer]  -> $OUT_DIR/ar_sft and $OUT_DIR/mars_blk$BLOCK_SIZE
 #   BLOCK_SIZE [16]   EPOCHS [1]   LR [5e-6]   MAX_LENGTH [512]   EFF_BATCH [384]
@@ -37,7 +38,7 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 MARS_DIR=${MARS_DIR:?set MARS_DIR to a clone of https://github.com/Xalp/MARS (commit 131b6ae)}
 BASE_MODEL=${BASE_MODEL:-Qwen/Qwen2.5-32B-Instruct}
 DATASET=${DATASET:-allenai/Dolci-Instruct-SFT}
-STAGE2_DATASET=${STAGE2_DATASET:-}
+STAGE2_DATASET=${STAGE2_DATASET:-$DATASET}
 OUT_DIR=${OUT_DIR:-runs/prove-proposer}
 BLOCK_SIZE=${BLOCK_SIZE:-16}
 EPOCHS=${EPOCHS:-1}
@@ -201,9 +202,6 @@ if [ "$STAGE" = all ] || [ "$STAGE" = 1 ]; then
 fi
 
 if [ "$STAGE" = all ] || [ "$STAGE" = 2 ]; then
-  [ -n "$STAGE2_DATASET" ] || fatal "STAGE2_DATASET is unset. Build it with:
-        python $HERE/prepare_dolci_subset.py --out data/dolci_12p5
-        and pass STAGE2_DATASET=data/dolci_12p5 (a Hugging Face dataset id also works)" 4
   case "$STAGE2_DATASET" in
     /*|./*|../*) [ -d "$STAGE2_DATASET" ] || fatal "STAGE2_DATASET=$STAGE2_DATASET does not exist" 4 ;;
   esac
