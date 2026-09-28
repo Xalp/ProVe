@@ -1,0 +1,26 @@
+# ProVe with a stock 3B verifier (Qwen2.5-3B-Instruct), theta = 0.05 (one of the paper's grid {0.10, 0.05, 0.01}).
+#   bash serve.sh --proposer <dir> --verifier <Qwen2.5-3B-Instruct dir> --theta 0.05
+#   by hand: python -m sglang.launch_server ... --dllm-algorithm ProVe --dllm-algorithm-config prove_3b_theta0.05.yaml
+# serve.sh --verifier fills in verifier_path. If you launch sglang yourself, replace the placeholder
+# first: the server refuses to start while it still reads "__VERIFIER__".
+block_size: 16                  # proposed-block size = the proposer's MARS training block
+verifier_path: "__VERIFIER__"   # LOCAL directory of a stock AR model with the SAME tokenizer, e.g. a download of
+                                # Qwen/Qwen2.5-3B-Instruct (serve.sh downloads a Hugging Face id first)
+theta: 0.05                     # gate threshold on p~ * q; lower = more tokens accepted = faster but lossier
+rule: and                       # "and" = commit while p~ * q >= theta (paper); "ptilde" = p~ >= theta
+verifier_temp: 1.0              # softmax temperature applied to the verifier's logits before reading p~
+audit: true                     # count free audit mismatches (proposer's own AR token vs committed token) in the MARSV_LOG stats
+vtok: false                     # paper setting; "pq" or "v" would also commit one verifier-chosen token at the stop position (lossier)
+inproc_fp8: false               # keep the verifier in bf16
+# Verifier memory. The verifier runs inside the proposer's process with its own KV pool, carved out of
+# the memory the proposer leaves free (whatever its --mem-fraction-static did not take).
+#   inproc_pool_gb       the verifier's KV pool in GB, absolute (2.0 = ~58k tokens of 3B KV). The sglang
+#                        fraction is derived from it at start-up, so this value ports across proposers and GPUs.
+#   inproc_mem_fraction  (not set here) PINS sglang's raw fraction instead: pool = free_after_proposer x fraction
+#                        - verifier_weights, so the same number means a different pool beside every proposer,
+#                        and a value that leaves pool <= 0 stops the server with the arithmetic. The paper's
+#                        campaign (32B proposer, TP=2, 80 GB GPUs) pinned 0.18 with the proposer at
+#                        --mem-fraction-static 0.70:  serve.sh ... --tp 2 --mem-fraction 0.70 --verifier-mem-fraction 0.18
+#                        (a pinned fraction takes precedence over inproc_pool_gb).
+# The server log must show "[InprocVerifier] injected into dllm algorithm"; see configs/README.md.
+inproc_pool_gb: 2.0

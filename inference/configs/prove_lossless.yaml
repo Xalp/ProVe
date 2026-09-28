@@ -1,0 +1,6 @@
+# ProVe-lossless: the proposer verifies its own proposed block (two proposer forwards per
+# cycle). Output == greedy AR decoding of the proposer, token for token (bf16 ties aside).
+# No verifier model is needed.
+#   python -m sglang.launch_server ... --dllm-algorithm ProVeLossless --dllm-algorithm-config prove_lossless.yaml
+block_size: 16   # proposed-block size = the proposer's MARS training block (16 for the released proposers)
+audit: false     # true = also count "first proposed token != AR token" events in the MARSV_LOG stats (diagnostic only)

@@ -1,0 +1,21 @@
+# accelerate config for train_proposer.sh (DeepSpeed ZeRO-3, bf16 declared in the json).
+# train_proposer.sh copies this file next to the run and rewrites the four node-dependent
+# fields (deepspeed_config_file, machine_rank, num_machines, num_processes) with sed.
+# With deepspeed_config_file set, accelerate refuses its own deepspeed keys (mixed_precision
+# included); deepspeed_multinode_launcher must stay or a multi-node job silently collapses
+# to a single machine.
+compute_environment: LOCAL_MACHINE
+debug: false
+deepspeed_config:
+  deepspeed_config_file: configs/ds_zero3_hpz.json
+  deepspeed_multinode_launcher: standard
+  zero3_init_flag: true
+distributed_type: DEEPSPEED
+downcast_bf16: 'no'
+machine_rank: 0
+main_training_function: main
+num_machines: 1
+num_processes: 8
+rdzv_backend: static
+same_network: true
+use_cpu: false

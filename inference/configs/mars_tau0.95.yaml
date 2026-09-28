@@ -1,0 +1,5 @@
+# MARS self-gate baseline (no verifier): walk the proposed block left to right and commit
+# while the proposer's OWN top-1 probability >= threshold (tau). Lossy.
+#   python -m sglang.launch_server ... --dllm-algorithm MarsThreshold --dllm-algorithm-config mars_tau0.95.yaml
+block_size: 16
+threshold: 0.95   # tau; higher = stricter (closer to AR), lower = faster / lossier

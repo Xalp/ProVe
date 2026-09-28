@@ -1,0 +1,22 @@
+# ProVe with a stock 7B verifier (Qwen2.5-7B-Instruct), theta = 0.05 (paper: 2.3x at -0.2 points with the 32B proposer).
+#   bash serve.sh --proposer <dir> --verifier <Qwen2.5-7B-Instruct dir> --config configs/prove_7b_theta0.05.yaml
+#   by hand: python -m sglang.launch_server ... --dllm-algorithm ProVe --dllm-algorithm-config prove_7b_theta0.05.yaml
+# serve.sh --verifier fills in verifier_path. If you launch sglang yourself, replace the placeholder
+# first: the server refuses to start while it still reads "__VERIFIER__".
+block_size: 16                  # proposed-block size = the proposer's MARS training block
+verifier_path: "__VERIFIER__"   # LOCAL directory of a stock AR model with the SAME tokenizer, e.g. a download of
+                                # Qwen/Qwen2.5-7B-Instruct (serve.sh downloads a Hugging Face id first)
+theta: 0.05                     # gate threshold on p~ * q; lower = more tokens accepted = faster but lossier
+rule: and                       # "and" = commit while p~ * q >= theta (paper); "ptilde" = p~ >= theta
+verifier_temp: 1.0              # softmax temperature applied to the verifier's logits before reading p~
+audit: true                     # count free audit mismatches (proposer's own AR token vs committed token) in the MARSV_LOG stats
+vtok: false                     # paper setting; "pq" or "v" would also commit one verifier-chosen token at the stop position (lossier)
+inproc_fp8: false               # keep the verifier in bf16
+# Verifier memory (see prove_3b_theta*.yaml and configs/README.md). A 7B verifier needs ~15.5 GB for its
+# weights on one GPU (~7.8 GB per rank at TP=2) before any KV pool, so the proposer must leave that much free:
+# one 80 GB GPU with the 7B proposer, or two 80 GB GPUs with the 32B proposer (--tp 2).
+#   inproc_pool_gb       absolute KV pool in GB (2.0 = ~37k tokens of 7B KV); ports across proposers and GPUs.
+#   inproc_mem_fraction  (not set here) pins sglang's raw fraction instead. The paper's campaign (32B, TP=2)
+#                        pinned 0.32 with the proposer at --mem-fraction-static 0.55 (0.25 starved the pool):
+#                        serve.sh ... --tp 2 --mem-fraction 0.55 --verifier-mem-fraction 0.32
+inproc_pool_gb: 2.0
