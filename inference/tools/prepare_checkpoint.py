@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright 2026 The ProVe Authors
+# SPDX-License-Identifier: Apache-2.0
 """Prepare a MARS proposer checkpoint for serving, without copying its weights.
 
 MARS checkpoints (e.g. Xalphinions/MARS-Qwen2.5-7B-blk16) ship a config.json that says

@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# Copyright 2026 The ProVe Authors
+# SPDX-License-Identifier: Apache-2.0
 """Build an OPTIONAL, cheaper stage-2 training subset of Dolci-Instruct-SFT.
 
 The paper's proposers trained stage 2 (block training, B=16) on the full

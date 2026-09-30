@@ -1,3 +1,5 @@
+# Copyright 2026 The ProVe Authors
+# SPDX-License-Identifier: Apache-2.0
 """ProVe — proposer-verifier decoding with a small stock verifier (the paper's name).
 
 ``ProVe`` is the name used in the paper ("ProVe: Proposer-Verifier Decoding"). It is a

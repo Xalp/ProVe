@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright 2026 The ProVe Authors
+# SPDX-License-Identifier: Apache-2.0
 # setup_env.sh — create a fresh Python 3.12 environment for ProVe inference and install into it.
 # Uses uv when available (fast), otherwise conda; then runs install.sh.
 # Usage:  bash setup_env.sh [--uv | --conda] [--name NAME]      (default NAME: prove)

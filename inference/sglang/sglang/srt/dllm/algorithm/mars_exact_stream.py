@@ -1,3 +1,5 @@
+# Copyright 2026 The ProVe Authors
+# SPDX-License-Identifier: Apache-2.0
 """MarsExactStream — ProVe-lossless: self-verification, TWO proposer forwards per cycle, no verifier model.
 
 Forward A (propose): window at S..S+blk-1 = [k re-fed real tokens][blk-k masks]; the right-shifted

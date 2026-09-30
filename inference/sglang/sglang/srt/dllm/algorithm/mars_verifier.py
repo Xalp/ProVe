@@ -1,3 +1,5 @@
+# Copyright 2026 The ProVe Authors
+# SPDX-License-Identifier: Apache-2.0
 """MarsVerifier — block-fill variant of proposer-verifier decoding, kept for its helpers.
 
 The ProVe configuration shipped and measured in the paper is MarsVerifierStream

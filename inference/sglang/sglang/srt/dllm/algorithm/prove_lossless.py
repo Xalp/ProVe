@@ -1,3 +1,5 @@
+# Copyright 2026 The ProVe Authors
+# SPDX-License-Identifier: Apache-2.0
 """ProVe-lossless — the proposer verifies its own proposed block (the paper's name).
 
 ``ProVeLossless`` is the name used in the paper for the configuration whose verifier is

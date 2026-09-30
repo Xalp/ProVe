@@ -1,3 +1,5 @@
+# Copyright 2026 The ProVe Authors
+# SPDX-License-Identifier: Apache-2.0
 """lm-evaluation-harness backend that talks to a running sglang server and times every request.
 
 Registers the model type ``sgl_timed``. It keeps the harness's own CLI, tasks, scoring,

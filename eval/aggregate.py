@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# Copyright 2026 The ProVe Authors
+# SPDX-License-Identifier: Apache-2.0
 """Aggregate run_eval.sh outputs into per-benchmark accuracy and speed tables (paper Table 1 layout).
 
 Walks <root>/<config>/<task>_<fs>shot/ and reads the lm-eval results*.json (searched recursively:

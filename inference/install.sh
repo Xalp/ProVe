@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright 2026 The ProVe Authors
+# SPDX-License-Identifier: Apache-2.0
 # install.sh — install the ProVe inference stack into the CURRENT Python environment.
 #   1. torch 2.9.1 (+ torchvision, torchaudio) from the CUDA 12.9 wheel index
 #   2. the bundled sglang fork (editable) with its pinned dependencies

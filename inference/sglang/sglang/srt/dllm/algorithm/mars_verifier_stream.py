@@ -1,3 +1,5 @@
+# Copyright 2026 The ProVe Authors
+# SPDX-License-Identifier: Apache-2.0
 """MarsVerifierStream — ProVe: the proposer proposes a block, a smaller verifier judges it.
 
 ONE proposer forward per cycle: the proposer's mask stream proposes a block of tokens in

@@ -1,3 +1,5 @@
+# Copyright 2026 The ProVe Authors
+# SPDX-License-Identifier: Apache-2.0
 """
 MARS threshold-accept decoding (Option-4 rollout).
 

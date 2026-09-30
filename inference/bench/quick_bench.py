@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright 2026 The ProVe Authors
+# SPDX-License-Identifier: Apache-2.0
 """quick_bench.py — single-stream benchmark against a running ProVe / sglang server.
 
 Sends N prompts ONE AT A TIME (greedy, temperature 0) to the server's /generate endpoint and

@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright 2026 The ProVe Authors
+# SPDX-License-Identifier: Apache-2.0
 # ======================================================================================
 # run_eval.sh -- accuracy AND speed of one decoding configuration on the paper's benchmarks.
 #

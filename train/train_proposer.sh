@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright 2026 The ProVe Authors
+# SPDX-License-Identifier: Apache-2.0
 # ======================================================================================
 # train_proposer.sh -- train a ProVe proposer with the MARS recipe, in two stages.
 #

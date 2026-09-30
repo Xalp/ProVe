@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright 2026 The ProVe Authors
+# SPDX-License-Identifier: Apache-2.0
 # serve.sh — launch an sglang server for a MARS proposer in one of four decoding modes.
 #
 #   ProVe-lossless (default, no verifier):  bash serve.sh --proposer <dir>

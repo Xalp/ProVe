@@ -1,3 +1,5 @@
+# Copyright 2026 The ProVe Authors
+# SPDX-License-Identifier: Apache-2.0
 """In-process verifier for ProVe (MarsVerifierStream): a second sglang runner beside the proposer.
 
 The verifier (a smaller stock AR model, Qwen2.5-3B/7B-Instruct in the paper) is served
