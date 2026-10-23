@@ -1,5 +1,11 @@
 # ProVe: Proposer-Verifier Decoding
 
+<p align="center">
+  <a href="https://xalp.net/prove/"><b>Project page</b></a> &nbsp;·&nbsp;
+  Paper: arXiv (coming soon) &nbsp;·&nbsp;
+  <a href="#checkpoints">Checkpoints</a>
+</p>
+
 Speculative decoding lets a small model draft tokens one at a time and a large model check
 them in parallel. **ProVe reverses the roles.** A large autoregressive model is fine-tuned into
 a **proposer** that writes a **proposed block** of 16 tokens in a *single* forward pass; a
@@ -98,7 +104,7 @@ experiment is not reported in the paper, whose tables use the 32B proposer.
 |---|---|---|
 | `MARS-Qwen2.5-7B-blk16` | 7B proposer (Qwen2.5-7B-Instruct, block size 16); the 7B numbers below | [`Xalphinions/MARS-Qwen2.5-7B-blk16`](https://huggingface.co/Xalphinions/MARS-Qwen2.5-7B-blk16) |
 | `MARS-Qwen2.5-7B-AR-SFT` | its stage-1 AR checkpoint (AR baseline, or `STAGE2_INIT` for training) | [`Xalphinions/MARS-Qwen2.5-7B-AR-SFT`](https://huggingface.co/Xalphinions/MARS-Qwen2.5-7B-AR-SFT) |
-| `ProVe-Qwen2.5-32B-blk16` | 32B proposer (Qwen2.5-32B-Instruct + Dolci, 1 + 1 epochs, block size 16); the paper's main proposer | [`Xalphinions/ProVe-Qwen2.5-32B-blk16`](https://huggingface.co/Xalphinions/ProVe-Qwen2.5-32B-blk16) (private until the public release) |
+| `ProVe-Qwen2.5-32B-blk16` | 32B proposer (Qwen2.5-32B-Instruct + Dolci, 1 + 1 epochs, block size 16); the paper's main proposer | [`Xalphinions/ProVe-Qwen2.5-32B-blk16`](https://huggingface.co/Xalphinions/ProVe-Qwen2.5-32B-blk16) |
 | verifiers | stock `Qwen/Qwen2.5-3B-Instruct`, `Qwen/Qwen2.5-7B-Instruct` | Hugging Face Hub |
 
 Any MARS block-16 checkpoint is a valid proposer; `train/` reproduces the 32B one.
